@@ -2,8 +2,8 @@
 #include <SPI.h>
 #include <RH_ASK.h>
 
-#define LED_rx 8
-RH_ASK rf_driver;
+#define LED_rx 6
+RH_ASK rf_driver;//edit rx pin = 7
 
 void setup() {
   start:
