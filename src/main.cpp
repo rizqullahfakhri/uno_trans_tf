@@ -1,37 +1,62 @@
 #include <Arduino.h>
 #include <SPI.h>
-#include <RH_ASK.h>
-
 #define LED_rx 6
-RH_ASK rf_driver;//edit rx pin = 7
+
+int i, good, k;
+byte data_in;
+
+void data_incoming(){
+    
+    digitalWrite(LED_rx,HIGH);
+    for(i=0; i<100; i++){
+      delayMicroseconds(20);
+      good=1;
+      if(digitalRead(3)==LOW){
+      good=0;
+      i=100;
+      }
+    }//for
+      
+    if(good==1){
+    detachInterrupt(1);
+    while(1){
+      if(digitalRead(3)==LOW){
+        delayMicroseconds(750);
+
+        for(i=0; i<8; i++){
+          if(digitalRead(3)==HIGH)
+          bitWrite(data_in, i, 1);
+          else
+          bitWrite(data_in, i, 0);
+          delayMicroseconds(1000);
+        }//for
+        if(data_in=='#')
+        Serial.println("");
+        else
+        Serial.print(data_in);
+        Serial.print(" ");
+
+       break;//secondtwhile
+      }//low kickoff
+      
+    }//second while
+    
+    }//good check
+  digitalWrite(LED_rx,LOW);
+  attachInterrupt(1,data_incoming,RISING);
+  
+  
+  
+}//routine
 
 void setup() {
   start:
-  Serial.begin(9600);
+  attachInterrupt(1,data_incoming,RISING);
+  Serial.begin(115200);
   Serial.println("TURN ON");
-  if(!rf_driver.init()){
-    Serial.println("Failed");
-    goto start;
-  }
   pinMode(LED_rx,OUTPUT);
 }
 
 void loop() {
-  uint8_t buf=0;
-  uint8_t buflen = sizeof(buf);
-  if(rf_driver.recv(&buf,&buflen)){
-    Serial.println((byte)buf,BIN);
-  }
-  
 
-    // uint8_t buf[11];
-    // uint8_t buflen = sizeof(buf);
-    // // Check if received packet is correct size
-    // if (rf_driver.recv(buf, &buflen))
-    // {
-      
-    //   // Message received with valid checksum
-    //   Serial.print("Message Received: ");
-    //   Serial.println((char*)buf);         
-    // }
 }
