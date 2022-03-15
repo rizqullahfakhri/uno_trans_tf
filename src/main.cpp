@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <SPI.h>
+#include <SD.h>
 #define LED_rx 6
 
 int i, good, k;
@@ -50,11 +51,11 @@ void data_incoming(){
 }//routine
 
 void setup() {
-  start:
   attachInterrupt(1,data_incoming,RISING);
   Serial.begin(115200);
   Serial.println("TURN ON");
   pinMode(LED_rx,OUTPUT);
+  pinMode(3, INPUT);
 }
 
 void loop() {
