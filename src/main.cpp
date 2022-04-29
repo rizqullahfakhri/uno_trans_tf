@@ -5,6 +5,7 @@
 
 int i, good, k;
 byte data_in;
+File myfile;
 
 void data_incoming(){
     
@@ -31,11 +32,16 @@ void data_incoming(){
           bitWrite(data_in, i, 0);
           delayMicroseconds(1000);
         }//for
-        if(data_in=='#')
+        if(data_in=='#'){
         Serial.println("");
-        else
+        myfile.println("");
+        }
+        else{
         Serial.print(data_in);
-        Serial.print(" ");
+        Serial.print(".");
+        myfile.print(data_in);
+        myfile.print(".");
+        }
 
        break;//secondtwhile
       }//low kickoff
@@ -44,6 +50,12 @@ void data_incoming(){
     
     }//good check
   digitalWrite(LED_rx,LOW);
+  if(digitalRead(7)==LOW){
+    myfile.close();
+    while(1){
+      digitalWrite(LED_rx,HIGH);
+    }
+  }
   attachInterrupt(1,data_incoming,RISING);
   
   
@@ -51,11 +63,18 @@ void data_incoming(){
 }//routine
 
 void setup() {
+  start:
   attachInterrupt(1,data_incoming,RISING);
   Serial.begin(115200);
   Serial.println("TURN ON");
   pinMode(LED_rx,OUTPUT);
   pinMode(3, INPUT);
+  pinMode(7, INPUT_PULLUP);
+  if (!SD.begin(10)){
+    goto start;
+  }
+  myfile = SD.open("text.txt",FILE_WRITE);
+  myfile.println("START");
 }
 
 void loop() {
