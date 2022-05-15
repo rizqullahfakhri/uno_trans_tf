@@ -2,10 +2,18 @@
 #include <SPI.h>
 #include <SD.h>
 #define LED_rx 6
-
-int i, good, k;
+unsigned long previousMillis = 0;
+int i, good, k, timeMil;
 byte data_in;
 File myfile;
+
+void printTime(){
+  unsigned long currentmillis = millis();
+  timeMil = currentmillis - previousMillis;
+  myfile.print(timeMil);
+  myfile.print(" ");
+  previousMillis = currentmillis;
+}
 
 void data_incoming(){
     
@@ -32,15 +40,16 @@ void data_incoming(){
           bitWrite(data_in, i, 0);
           delayMicroseconds(1000);
         }//for
-        if(data_in=='#'){
-        Serial.println("");
-        myfile.println("");
+        if(data_in=='}'){
+          Serial.println("");
+          myfile.println("");
         }
         else{
-        Serial.print(data_in);
-        Serial.print(".");
-        myfile.print(data_in);
-        myfile.print(".");
+          printTime();
+          Serial.print(data_in);
+          Serial.print(".");
+          myfile.print(data_in);
+          myfile.print(".");
         }
 
        break;//secondtwhile
@@ -64,17 +73,25 @@ void data_incoming(){
 
 void setup() {
   start:
-  attachInterrupt(1,data_incoming,RISING);
   Serial.begin(115200);
   Serial.println("TURN ON");
   pinMode(LED_rx,OUTPUT);
-  pinMode(3, INPUT);
   pinMode(7, INPUT_PULLUP);
+  digitalWrite(LED_rx,LOW);
   if (!SD.begin(10)){
+    Serial.println("SD FAIL");
     goto start;
   }
-  myfile = SD.open("text.txt",FILE_WRITE);
+  // if (digitalRead(7)!=LOW){
+  //   digitalWrite(LED_rx,HIGH);
+  //   delay(1000);
+  //   goto start;
+  // }
+  myfile = SD.open("UJICOBA.txt",FILE_WRITE);
   myfile.println("START");
+  Serial.println("Start");
+  attachInterrupt(1,data_incoming,RISING);
+  pinMode(3, INPUT);
 }
 
 void loop() {
