@@ -4,7 +4,7 @@
 #define LED_rx 6
 unsigned long previousMillis = 0;
 int i, good, k, timeMil;
-byte data_in;
+int data_in = 0;
 File myfile;
 
 void printTime(){
@@ -33,24 +33,28 @@ void data_incoming(){
       if(digitalRead(3)==LOW){
         delayMicroseconds(750);
 
-        for(i=0; i<8; i++){
+        for(i=0; i<13; i++){
           if(digitalRead(3)==HIGH)
           bitWrite(data_in, i, 1);
           else
           bitWrite(data_in, i, 0);
           delayMicroseconds(1000);
         }//for
-        if(data_in=='}'){
-          Serial.println("");
-          myfile.println("");
-        }
-        else{
-          printTime();
-          Serial.print(data_in);
-          Serial.print(".");
-          myfile.print(data_in);
-          myfile.print(".");
-        }
+        // if(data_in=='}'){
+        //   Serial.println("");
+        //   myfile.println("");
+        // }
+        // else{
+        //   printTime();
+        //   Serial.print(data_in);
+        //   Serial.print(".");
+        //   myfile.print(data_in);
+        //   myfile.print(".");
+        // }
+        Serial.println(data_in);
+        float temp = (float)data_in/100;
+        myfile.println(temp);
+        Serial.println(temp);
 
        break;//secondtwhile
       }//low kickoff
@@ -60,6 +64,7 @@ void data_incoming(){
     }//good check
   digitalWrite(LED_rx,LOW);
   if(digitalRead(7)==LOW){
+    myfile.println("Stop");
     myfile.close();
     while(1){
       digitalWrite(LED_rx,HIGH);
