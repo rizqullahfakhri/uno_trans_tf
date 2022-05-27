@@ -4,12 +4,13 @@
 #define LED_rx 6
 unsigned long previousMillis = 0;
 int i, good, k, timeMil;
-int data_in = 0;
+uint16_t data_in =0;
 File myfile;
 
 void printTime(){
   unsigned long currentmillis = millis();
   timeMil = currentmillis - previousMillis;
+  myfile.print(" ");
   myfile.print(timeMil);
   myfile.print(" ");
   previousMillis = currentmillis;
@@ -33,11 +34,15 @@ void data_incoming(){
       if(digitalRead(3)==LOW){
         delayMicroseconds(750);
 
-        for(i=0; i<13; i++){
-          if(digitalRead(3)==HIGH)
+        for(i=0; i<9; i++){
+          if(digitalRead(3)==HIGH){
           bitWrite(data_in, i, 1);
-          else
+          myfile.print("1");
+          }
+          else{
           bitWrite(data_in, i, 0);
+          myfile.print("0");
+          }
           delayMicroseconds(1000);
         }//for
         // if(data_in=='}'){
@@ -51,9 +56,17 @@ void data_incoming(){
         //   myfile.print(data_in);
         //   myfile.print(".");
         // }
+        // bitWrite(data_in,11,1);
+  
+        if(data_in>512){
+          data_in=512;
+        }
         Serial.println(data_in);
-        float temp = (float)data_in/100;
+        Serial.println(data_in,BIN);
+        float temp = (float)data_in/10;
+        printTime();
         myfile.println(temp);
+        myfile.println(data_in);
         Serial.println(temp);
 
        break;//secondtwhile
