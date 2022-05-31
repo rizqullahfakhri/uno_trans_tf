@@ -32,7 +32,7 @@ void data_incoming(){
     detachInterrupt(1);
     while(1){
       if(digitalRead(3)==LOW){
-        delayMicroseconds(750);
+        delayMicroseconds(375);
 
         for(i=0; i<9; i++){
           if(digitalRead(3)==HIGH){
@@ -43,7 +43,7 @@ void data_incoming(){
           bitWrite(data_in, i, 0);
           myfile.print("0");
           }
-          delayMicroseconds(1000);
+          delayMicroseconds(500);
         }//for
         // if(data_in=='}'){
         //   Serial.println("");
@@ -65,7 +65,8 @@ void data_incoming(){
         Serial.println(data_in,BIN);
         float temp = (float)data_in/10;
         printTime();
-        myfile.println(temp);
+        myfile.print(temp);
+        myfile.print(" ");
         myfile.println(data_in);
         Serial.println(temp);
 
