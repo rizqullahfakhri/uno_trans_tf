@@ -19,7 +19,7 @@ void printTime(){
 void data_incoming(){
     
     digitalWrite(LED_rx,HIGH);
-    for(i=0; i<100; i++){
+    for(i=0; i<50; i++){
       delayMicroseconds(20);
       good=1;
       if(digitalRead(3)==LOW){
