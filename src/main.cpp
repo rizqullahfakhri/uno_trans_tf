@@ -19,7 +19,7 @@ void printTime(){
 void data_incoming(){
     
     digitalWrite(LED_rx,HIGH);
-    for(i=0; i<50; i++){
+    for(i=0; i<100; i++){
       delayMicroseconds(20);
       good=1;
       if(digitalRead(3)==LOW){
@@ -32,7 +32,7 @@ void data_incoming(){
     detachInterrupt(1);
     while(1){
       if(digitalRead(3)==LOW){
-        delayMicroseconds(375);
+        delayMicroseconds(750);
 
         for(i=0; i<9; i++){
           if(digitalRead(3)==HIGH){
@@ -43,7 +43,7 @@ void data_incoming(){
           bitWrite(data_in, i, 0);
           myfile.print("0");
           }
-          delayMicroseconds(500);
+          delayMicroseconds(1000);
         }//for
         // if(data_in=='}'){
         //   Serial.println("");
