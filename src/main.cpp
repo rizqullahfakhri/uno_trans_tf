@@ -3,7 +3,8 @@
 #include <SD.h>
 #define LED_rx 6
 unsigned long previousMillis = 0;
-int i, good, k, timeMil;
+int i, good, timeMil;
+int k = 0;
 uint16_t data_in =0;
 File myfile;
 
@@ -19,12 +20,12 @@ void printTime(){
 void data_incoming(){
     
     digitalWrite(LED_rx,HIGH);
-    for(i=0; i<100; i++){
+    for(i=0; i<50; i++){
       delayMicroseconds(20);
       good=1;
       if(digitalRead(3)==LOW){
       good=0;
-      i=100;
+      i=50;
       }
     }//for
       
@@ -44,7 +45,8 @@ void data_incoming(){
           myfile.print("0");
           }
           delayMicroseconds(1000);
-        }//for
+        }
+        //for
         // if(data_in=='}'){
         //   Serial.println("");
         //   myfile.println("");
@@ -69,7 +71,7 @@ void data_incoming(){
         myfile.print(" ");
         myfile.println(data_in);
         Serial.println(temp);
-
+        k++;
        break;//secondtwhile
       }//low kickoff
       
@@ -77,7 +79,7 @@ void data_incoming(){
     
     }//good check
   digitalWrite(LED_rx,LOW);
-  if(digitalRead(7)==LOW){
+  if(k == 100){
     myfile.println("Stop");
     myfile.close();
     while(1){
@@ -101,11 +103,6 @@ void setup() {
     Serial.println("SD FAIL");
     goto start;
   }
-  // if (digitalRead(7)!=LOW){
-  //   digitalWrite(LED_rx,HIGH);
-  //   delay(1000);
-  //   goto start;
-  // }
   myfile = SD.open("UJICOBA.txt",FILE_WRITE);
   myfile.println("START");
   Serial.println("Start");
